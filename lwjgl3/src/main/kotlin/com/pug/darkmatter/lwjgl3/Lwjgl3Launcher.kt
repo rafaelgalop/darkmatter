@@ -15,7 +15,7 @@ private fun createApplication(): Lwjgl3Application {
         DarkMatter(),
         Lwjgl3ApplicationConfiguration().apply {
             setTitle("Dark Matter")
-            setWindowedMode(640, 480)
+            setWindowedMode(9*32, 16*32)
             setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png")
 
         })
