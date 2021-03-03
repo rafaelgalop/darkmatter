@@ -1,5 +1,7 @@
 package com.pug.darkmatter
 
+import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Application.LOG_DEBUG
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -16,8 +18,8 @@ private val LOG: Logger = logger<DarkMatter>()
 
 /** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms.  */
 class DarkMatter : KtxGame<DarkMatterScreen>() {
-
     val batch: Batch by lazy { SpriteBatch() }
+    val engine: Engine by lazy { PooledEngine()}
     override fun create() {
         Gdx.app.logLevel = LOG_DEBUG
         LOG.debug { "Create game instance" }
@@ -26,6 +28,8 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
     }
 
     override fun dispose() {
+        super.dispose()
+        LOG.debug { "Sprites in batch: ${(batch as SpriteBatch).maxSpritesInBatch}" }
         batch.dispose()
     }
 }
