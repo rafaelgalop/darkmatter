@@ -28,14 +28,27 @@ class GameScreen(game: DarkMatter) : DarkMatterScreen(game) {
 
     override fun show() {
         LOG.debug { "Game Screen is shown" }
-        engine.entity {
+
+        val playerShip = engine.entity {
             with<TransformComponent> {
-                setInitialPosition(4.5f, 8f, 0f)
+                setInitialPosition(4.5f, 8f, -1f)
             }
             with<MoveComponent>()
             with<GraphicComponent>()
             with<PlayerComponent>()
             with<FacingComponent>()
+        }
+        engine.entity {
+            with<TransformComponent>()
+            with<AttachComponent> {
+                entity = playerShip
+                offset.set(1f * UNIT_SCALE, -6f * UNIT_SCALE)
+            }
+            with<GraphicComponent>()
+            with<AnimationComponent>{
+                type = AnimationType.FIRE
+            }
+
         }
         engine.entity {
             with<TransformComponent> {
