@@ -10,10 +10,12 @@ abstract class DarkMatterScreen(
     val game: DarkMatter,
     val batch: Batch = game.batch,
     val gameViewPort: Viewport = game.gameViewport,
+    val uiViewPort: Viewport = game.uiViewport,
     val engine: Engine = game.engine
 ) : KtxScreen {
 
     override fun resize(width: Int, height: Int) {
         gameViewPort.update(width, height, true)
+        uiViewPort.update(width, height, true)
     }
 }
