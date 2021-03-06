@@ -426,21 +426,91 @@ dark_matter
   index: 55
 error
   rotate: false
-  xy: 13, 13
+  xy: 13, 3
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: 0
 fire
+  rotate: false
+  xy: 1561, 96
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: 0
+fire
+  rotate: false
+  xy: 33, 3
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: 1
+life
+  rotate: false
+  xy: 13, 13
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: 1
+life
+  rotate: false
+  xy: 23, 13
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: 3
+life
+  rotate: false
+  xy: 1583, 117
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: 0
+life
+  rotate: false
+  xy: 1561, 86
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: 2
+orb_blue
+  rotate: false
+  xy: 1573, 117
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: 1
+orb_blue
+  rotate: false
+  xy: 33, 13
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: 0
+orb_yellow
+  rotate: false
+  xy: 23, 3
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: 1
+orb_yellow
+  rotate: false
+  xy: 43, 13
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: 0
+shield
   rotate: false
   xy: 1561, 106
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: 0
-fire
+shield
   rotate: false
-  xy: 1573, 117
+  xy: 1593, 117
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
