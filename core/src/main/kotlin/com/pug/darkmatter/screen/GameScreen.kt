@@ -11,6 +11,10 @@ import com.pug.darkmatter.V_HEIGHT
 import com.pug.darkmatter.V_WIDTH
 import com.pug.darkmatter.ecs.component.*
 import com.pug.darkmatter.ecs.system.DAMAGE_AREA_HEIGHT
+import com.pug.darkmatter.event.GameEvent
+import com.pug.darkmatter.event.GameEventListener
+import com.pug.darkmatter.event.GameEventPlayerDeath
+import com.pug.darkmatter.event.GameEventType
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.graphics.use
@@ -24,11 +28,32 @@ private var LOG: Logger = logger<GameScreen>()
 // const to avoid spiral of death
 private const val MAX_DELTA_TIME = 1 / 20f
 
-class GameScreen(game: DarkMatter) : DarkMatterScreen(game) {
+class GameScreen(game: DarkMatter) : DarkMatterScreen(game), GameEventListener {
 
     override fun show() {
         LOG.debug { "Game Screen is shown" }
+        gameEventManager.addListener(GameEventType.PLAYER_DEATH, this)
+        spawnPlayer()
+        engine.entity {
+            with<TransformComponent> {
+                size.set(
+                    V_WIDTH.toFloat(),
+                    DAMAGE_AREA_HEIGHT
+                )
+            }
+            with<AnimationComponent> {
+                type = AnimationType.DARK_MATTER
+            }
+            with<GraphicComponent>()
+        }
+    }
 
+    override fun hide() {
+        super.hide()
+        gameEventManager.removeListener(this)
+    }
+
+    private fun spawnPlayer() {
         val playerShip = engine.entity {
             with<TransformComponent> {
                 setInitialPosition(4.5f, 8f, -1f)
@@ -45,21 +70,9 @@ class GameScreen(game: DarkMatter) : DarkMatterScreen(game) {
                 offset.set(1f * UNIT_SCALE, -6f * UNIT_SCALE)
             }
             with<GraphicComponent>()
-            with<AnimationComponent>{
+            with<AnimationComponent> {
                 type = AnimationType.FIRE
             }
-        }
-        engine.entity {
-            with<TransformComponent> {
-                size.set(
-                    V_WIDTH.toFloat(),
-                    DAMAGE_AREA_HEIGHT
-                )
-            }
-            with<AnimationComponent> {
-                type = AnimationType.DARK_MATTER
-            }
-            with<GraphicComponent>()
         }
     }
 
@@ -67,5 +80,12 @@ class GameScreen(game: DarkMatter) : DarkMatterScreen(game) {
         (game.batch as SpriteBatch).renderCalls = 0
         engine.update(min(MAX_DELTA_TIME, delta))
         LOG.debug { "Rendercalls: ${(game.batch as SpriteBatch).renderCalls}" }
+    }
+
+    override fun onEvent(type: GameEventType, data: GameEvent?) {
+        if (type == GameEventType.PLAYER_DEATH) {
+            val eventData = data as GameEventPlayerDeath
+            spawnPlayer()
+        }
     }
 }
