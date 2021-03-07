@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.pug.darkmatter.ecs.system.*
+import com.pug.darkmatter.event.GameEventManager
 import com.pug.darkmatter.screen.DarkMatterScreen
 import com.pug.darkmatter.screen.GameScreen
 import ktx.app.KtxGame
@@ -30,6 +30,7 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
     val gameViewport = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
     val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
     val batch: Batch by lazy { SpriteBatch() }
+    val gameEventManager = GameEventManager()
 
     val graphicsAtlas by lazy { TextureAtlas(Gdx.files.internal("graphics/graphics.atlas")) }
     val backgroundTexture by lazy { Texture(Gdx.files.internal("graphics/background.png")) }
@@ -38,7 +39,7 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
         PooledEngine().apply {
             addSystem(PlayerInputSystem(gameViewport))
             addSystem(MoveSystem())
-            addSystem(PowerUpSystem())
+            addSystem(PowerUpSystem(gameEventManager))
             addSystem(DamageSystem())
             addSystem(
                 PlayerAnimationSystem(
@@ -49,7 +50,7 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
             )
             addSystem(AttachSystem())
             addSystem(AnimationSystem(graphicsAtlas))
-            addSystem(RenderSystem(batch, gameViewport, uiViewport, backgroundTexture))
+            addSystem(RenderSystem(batch, gameViewport, uiViewport, backgroundTexture,gameEventManager))
             addSystem(RemoveSystem())
             addSystem(DebugSystem())
         }

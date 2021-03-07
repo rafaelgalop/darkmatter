@@ -48,7 +48,6 @@ class GameScreen(game: DarkMatter) : DarkMatterScreen(game) {
             with<AnimationComponent>{
                 type = AnimationType.FIRE
             }
-
         }
         engine.entity {
             with<TransformComponent> {
@@ -61,13 +60,12 @@ class GameScreen(game: DarkMatter) : DarkMatterScreen(game) {
                 type = AnimationType.DARK_MATTER
             }
             with<GraphicComponent>()
-
         }
     }
 
     override fun render(delta: Float) {
         (game.batch as SpriteBatch).renderCalls = 0
         engine.update(min(MAX_DELTA_TIME, delta))
-//        LOG.debug { "Rendercalls: ${(game.batch as SpriteBatch).renderCalls}" }
+        LOG.debug { "Rendercalls: ${(game.batch as SpriteBatch).renderCalls}" }
     }
 }

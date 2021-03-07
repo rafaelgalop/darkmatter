@@ -6,6 +6,9 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.pug.darkmatter.V_WIDTH
 import com.pug.darkmatter.ecs.component.*
+import com.pug.darkmatter.event.GameEventCollectPowerUp
+import com.pug.darkmatter.event.GameEventManager
+import com.pug.darkmatter.event.GameEventType
 import ktx.ashley.*
 import ktx.collections.GdxArray
 import ktx.collections.gdxArrayOf
@@ -32,7 +35,9 @@ private class SpawnPattern(
     val types: GdxArray<PowerUpType> = gdxArrayOf(type1, type2, type3, type4, type5)
 )
 
-class PowerUpSystem :
+class PowerUpSystem(
+    private val gameEventManager: GameEventManager
+) :
     IteratingSystem(allOf(PowerUpComponent::class, TransformComponent::class).exclude(RemoveComponent::class).get()) {
     private val playerBoundingRect = Rectangle()
     private val powerUpBoundingRect = Rectangle()
@@ -44,7 +49,14 @@ class PowerUpSystem :
     private var spawnTime = 0f
     private val spawnPatterns = gdxArrayOf(
         SpawnPattern(type1 = PowerUpType.SPEED_1, type2 = PowerUpType.SPEED_2, type5 = PowerUpType.LIFE),
-        SpawnPattern(type2 = PowerUpType.LIFE, type3 = PowerUpType.SHIELD, type5 = PowerUpType.SPEED_2)
+        SpawnPattern(type2 = PowerUpType.LIFE, type3 = PowerUpType.SHIELD, type5 = PowerUpType.SPEED_2),
+        SpawnPattern(
+            type1 = PowerUpType.SPEED_1,
+            type2 = PowerUpType.SPEED_1,
+            type3 = PowerUpType.SPEED_2,
+            type4 = PowerUpType.SPEED_2,
+            type5 = PowerUpType.SPEED_2
+        )
     )
 
     private val currentSpawnPattern = GdxArray<PowerUpType>()
@@ -138,6 +150,14 @@ class PowerUpSystem :
                 }
             }
         }
+        gameEventManager.dispatchEvent(
+            GameEventType.COLLECT_POWER_UP,
+            GameEventCollectPowerUp.apply {
+                this.player = player
+                this.type = powerUpCmp.type
+            }
+
+        )
         powerUp.addComponent<RemoveComponent>(engine)
     }
 }
