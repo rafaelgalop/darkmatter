@@ -6,14 +6,14 @@ import com.badlogic.gdx.utils.viewport.Viewport
 import com.pug.darkmatter.DarkMatter
 import com.pug.darkmatter.event.GameEventManager
 import ktx.app.KtxScreen
+import ktx.assets.async.AssetStorage
 
 abstract class DarkMatterScreen(
     val game: DarkMatter,
-    val batch: Batch = game.batch,
     val gameViewPort: Viewport = game.gameViewport,
     val uiViewPort: Viewport = game.uiViewport,
-    val engine: Engine = game.engine,
-    val gameEventManager: GameEventManager = game.gameEventManager
+    val gameEventManager: GameEventManager = game.gameEventManager,
+    val assets: AssetStorage = game.assets
 ) : KtxScreen {
 
     override fun resize(width: Int, height: Int) {

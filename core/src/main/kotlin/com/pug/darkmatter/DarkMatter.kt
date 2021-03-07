@@ -9,11 +9,16 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.pug.darkmatter.ecs.asset.TextureAsset
+import com.pug.darkmatter.ecs.asset.TextureAtlasAsset
 import com.pug.darkmatter.ecs.system.*
 import com.pug.darkmatter.event.GameEventManager
 import com.pug.darkmatter.screen.DarkMatterScreen
 import com.pug.darkmatter.screen.GameScreen
+import com.pug.darkmatter.screen.LoadingScreen
 import ktx.app.KtxGame
+import ktx.assets.async.AssetStorage
+import ktx.async.KtxAsync
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
@@ -31,12 +36,19 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
     val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
     val batch: Batch by lazy { SpriteBatch() }
     val gameEventManager = GameEventManager()
-
-    val graphicsAtlas by lazy { TextureAtlas(Gdx.files.internal("graphics/graphics.atlas")) }
-    val backgroundTexture by lazy { Texture(Gdx.files.internal("graphics/background.png")) }
+    val assets: AssetStorage by lazy {
+        KtxAsync.initiate()
+        AssetStorage()
+    }
+    //    Old way of loading atlas and assets, moved to a ktx storage system on loading screen
+    //    val graphicsAtlas by lazy { TextureAtlas(Gdx.files.internal("graphics/graphics.atlas")) }
+    //    val backgroundTexture by lazy { Texture(Gdx.files.internal("graphics/background.png")) }
 
     val engine: Engine by lazy {
         PooledEngine().apply {
+            var graphicsAtlas = assets[TextureAtlasAsset.GMAE_GRAPHICS.descriptor]
+            var backgroundTexture = assets[TextureAsset.BACKGROUND.descriptor]
+
             addSystem(PlayerInputSystem(gameViewport))
             addSystem(MoveSystem())
             addSystem(PowerUpSystem(gameEventManager))
@@ -60,16 +72,14 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
     override fun create() {
         Gdx.app.logLevel = LOG_DEBUG
         LOG.debug { "Create game instance" }
-        addScreen(GameScreen(this))
-        setScreen<GameScreen>()
+        addScreen(LoadingScreen(this))
+        setScreen<LoadingScreen>()
     }
 
     override fun dispose() {
         super.dispose()
         LOG.debug { "Sprites in batch: ${(batch as SpriteBatch).maxSpritesInBatch}" }
         batch.dispose()
-
-        graphicsAtlas.dispose()
-        backgroundTexture.dispose()
+        assets.dispose()
     }
 }

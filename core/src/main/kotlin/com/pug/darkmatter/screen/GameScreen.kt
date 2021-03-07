@@ -1,13 +1,9 @@
 package com.pug.darkmatter.screen
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.math.MathUtils
 import com.pug.darkmatter.DarkMatter
 import com.pug.darkmatter.UNIT_SCALE
-import com.pug.darkmatter.V_HEIGHT
 import com.pug.darkmatter.V_WIDTH
 import com.pug.darkmatter.ecs.component.*
 import com.pug.darkmatter.ecs.system.DAMAGE_AREA_HEIGHT
@@ -15,7 +11,6 @@ import com.pug.darkmatter.event.GameEvent
 import com.pug.darkmatter.event.GameEventListener
 import ktx.ashley.entity
 import ktx.ashley.with
-import ktx.graphics.use
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
@@ -26,7 +21,10 @@ private var LOG: Logger = logger<GameScreen>()
 // const to avoid spiral of death
 private const val MAX_DELTA_TIME = 1 / 20f
 
-class GameScreen(game: DarkMatter) : DarkMatterScreen(game), GameEventListener {
+class GameScreen(
+    game: DarkMatter,
+    val engine: Engine = game.engine
+) : DarkMatterScreen(game), GameEventListener {
 
     override fun show() {
         LOG.debug { "Game Screen is shown" }
@@ -77,14 +75,17 @@ class GameScreen(game: DarkMatter) : DarkMatterScreen(game), GameEventListener {
     override fun render(delta: Float) {
         (game.batch as SpriteBatch).renderCalls = 0
         engine.update(min(MAX_DELTA_TIME, delta))
-        LOG.debug { "Rendercalls: ${(game.batch as SpriteBatch).renderCalls}" }
+        LOG.debug { "Render calls: ${(game.batch as SpriteBatch).renderCalls}" }
     }
 
     override fun onEvent(event: GameEvent) {
-        //since GameEvent is a sealed kotlin class
-        when(event){
-            is GameEvent.PlayerDeath -> {spawnPlayer()}
+        // since GameEvent is a sealed kotlin class
+        when (event) {
+            is GameEvent.PlayerDeath -> {
+                spawnPlayer()
+            }
             is GameEvent.CollectPowerUp -> Unit
+            is GameEvent.PlayerHit -> Unit
         }
     }
 }
