@@ -33,11 +33,11 @@ class DebugSystem : IntervalIteratingSystem(allOf(PlayerComponent::class).get(),
             }
             Gdx.input.isKeyPressed(Input.Keys.NUM_2) -> {
                 // add shield
-                player.shield = min(player.maxshield, player.shield + 25f)
+                player.shield = min(player.maxShield, player.shield + 25f)
             }
             Gdx.input.isKeyPressed(Input.Keys.NUM_3) -> {
                 // remove shield
-                player.shield = min(player.maxshield, player.shield - 25f)
+                player.shield = min(player.maxShield, player.shield - 25f)
             }
             Gdx.input.isKeyPressed(Input.Keys.NUM_4) -> {
                 // disable movement

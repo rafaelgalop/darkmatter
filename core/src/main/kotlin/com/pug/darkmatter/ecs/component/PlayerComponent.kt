@@ -11,14 +11,14 @@ class PlayerComponent: Component, Pool.Poolable {
     var life = MAX_LIFE
     var maxLife = MAX_LIFE
     var shield = 0f
-    var maxshield = MAX_SHIELD
+    var maxShield = MAX_SHIELD
     var distance = 0f
 
     override fun reset() {
         life = MAX_LIFE
         maxLife = MAX_LIFE
         shield = 0f
-        maxshield = MAX_SHIELD
+        maxShield = MAX_SHIELD
         distance = 0f
     }
 

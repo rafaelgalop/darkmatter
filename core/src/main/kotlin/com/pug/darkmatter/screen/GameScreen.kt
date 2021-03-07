@@ -13,8 +13,6 @@ import com.pug.darkmatter.ecs.component.*
 import com.pug.darkmatter.ecs.system.DAMAGE_AREA_HEIGHT
 import com.pug.darkmatter.event.GameEvent
 import com.pug.darkmatter.event.GameEventListener
-import com.pug.darkmatter.event.GameEventPlayerDeath
-import com.pug.darkmatter.event.GameEventType
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.graphics.use
@@ -32,7 +30,7 @@ class GameScreen(game: DarkMatter) : DarkMatterScreen(game), GameEventListener {
 
     override fun show() {
         LOG.debug { "Game Screen is shown" }
-        gameEventManager.addListener(GameEventType.PLAYER_DEATH, this)
+        gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
         spawnPlayer()
         engine.entity {
             with<TransformComponent> {
@@ -82,10 +80,11 @@ class GameScreen(game: DarkMatter) : DarkMatterScreen(game), GameEventListener {
         LOG.debug { "Rendercalls: ${(game.batch as SpriteBatch).renderCalls}" }
     }
 
-    override fun onEvent(type: GameEventType, data: GameEvent?) {
-        if (type == GameEventType.PLAYER_DEATH) {
-            val eventData = data as GameEventPlayerDeath
-            spawnPlayer()
+    override fun onEvent(event: GameEvent) {
+        //since GameEvent is a sealed kotlin class
+        when(event){
+            is GameEvent.PlayerDeath -> {spawnPlayer()}
+            is GameEvent.CollectPowerUp -> Unit
         }
     }
 }
