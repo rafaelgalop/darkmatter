@@ -10,6 +10,7 @@ import com.pug.darkmatter.ecs.component.*
 import ktx.ashley.allOf
 import ktx.ashley.exclude
 import ktx.ashley.get
+import kotlin.math.abs
 import kotlin.math.max
 
 private const val UPDATE_RATE = 1 / 25f
@@ -91,7 +92,10 @@ class MoveSystem :
             -MAX_VER_NEG_PLAYER_SPEED,
             MAX_VER_POS_PLAYER_SPEED
         )
+
+        val oldY = transform.position.y
         moveEntity(transform, move, deltaTime)
+        player.distance+= abs(transform.position.y - oldY)
     }
 
     private fun moveEntity(transform: TransformComponent, move: MoveComponent, deltaTime: Float) {

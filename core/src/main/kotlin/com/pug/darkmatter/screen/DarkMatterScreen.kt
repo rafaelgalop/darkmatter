@@ -1,6 +1,7 @@
 package com.pug.darkmatter.screen
 
 import com.badlogic.ashley.core.Engine
+import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.pug.darkmatter.DarkMatter
@@ -15,7 +16,8 @@ abstract class DarkMatterScreen(
     val uiViewPort: Viewport = game.uiViewport,
     val gameEventManager: GameEventManager = game.gameEventManager,
     val assets: AssetStorage = game.assets,
-    val audioService: AudioService = game.audioService
+    val audioService: AudioService = game.audioService,
+    val preferences: Preferences = game.preferences
 ) : KtxScreen {
 
     override fun resize(width: Int, height: Int) {

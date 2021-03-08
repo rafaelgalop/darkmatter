@@ -10,11 +10,14 @@ import com.pug.darkmatter.ecs.component.*
 import com.pug.darkmatter.ecs.system.DAMAGE_AREA_HEIGHT
 import com.pug.darkmatter.event.GameEvent
 import com.pug.darkmatter.event.GameEventListener
+import com.pug.darkmatter.file.PreferenceKeys
+import com.pug.darkmatter.file.saveToPreferences
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
+import ktx.preferences.get
 import kotlin.math.min
 
 private var LOG: Logger = logger<GameScreen>()
@@ -29,6 +32,9 @@ class GameScreen(
 
     override fun show() {
         LOG.debug { "Game Screen is shown" }
+        LOG.debug {
+            "${preferences[PreferenceKeys.HIGH_SCORE.keyName, 0f]}"
+        }
         gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
 
         audioService.play(MusicAsset.GAME)
@@ -87,6 +93,11 @@ class GameScreen(
         // since GameEvent is a sealed kotlin class
         when (event) {
             is GameEvent.PlayerDeath -> {
+                LOG.debug { "Player died with a distance of ${event.distance}" }
+                if (preferences[PreferenceKeys.HIGH_SCORE.keyName, 0f] < event.distance) {
+                    LOG.debug { "New High Score achieved: ${event.distance}" }
+                    saveToPreferences(preferences, PreferenceKeys.HIGH_SCORE, event.distance)
+                }
                 spawnPlayer()
             }
             is GameEvent.CollectPowerUp -> Unit

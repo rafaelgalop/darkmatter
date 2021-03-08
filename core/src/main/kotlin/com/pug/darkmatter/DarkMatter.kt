@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Application.LOG_DEBUG
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -14,6 +15,7 @@ import com.pug.darkmatter.ecs.audio.AudioService
 import com.pug.darkmatter.ecs.audio.DefaultAudioService
 import com.pug.darkmatter.ecs.system.*
 import com.pug.darkmatter.event.GameEventManager
+import com.pug.darkmatter.file.DARK_MATTER_PREFERENCES_FILE
 import com.pug.darkmatter.screen.DarkMatterScreen
 import com.pug.darkmatter.screen.LoadingScreen
 import ktx.app.KtxGame
@@ -22,6 +24,7 @@ import ktx.async.KtxAsync
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
+import ktx.preferences.set
 
 const val UNIT_SCALE: Float = 1 / 16f
 const val V_WIDTH = 9
@@ -45,6 +48,8 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
     //    val backgroundTexture by lazy { Texture(Gdx.files.internal("graphics/background.png")) }
 
     val audioService: AudioService by lazy {DefaultAudioService(assets)}
+    val preferences: Preferences by lazy {Gdx.app.getPreferences(DARK_MATTER_PREFERENCES_FILE)}
+
     val engine: Engine by lazy {
         PooledEngine().apply {
             var graphicsAtlas = assets[TextureAtlasAsset.GAME_GRAPHICS.descriptor]
