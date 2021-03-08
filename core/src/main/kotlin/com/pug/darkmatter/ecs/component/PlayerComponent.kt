@@ -2,6 +2,7 @@ package com.pug.darkmatter.ecs.component
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.utils.Pool
+import com.pug.darkmatter.ecs.asset.SoundAsset
 import ktx.ashley.mapperFor
 
 const val MAX_LIFE =100f
@@ -13,6 +14,8 @@ class PlayerComponent: Component, Pool.Poolable {
     var shield = 0f
     var maxShield = MAX_SHIELD
     var distance = 0f
+    val damageSoundAsset: SoundAsset = SoundAsset.DAMAGE
+    val explosionSoundAsset: SoundAsset = SoundAsset.EXPLOSION
 
     override fun reset() {
         life = MAX_LIFE

@@ -2,6 +2,7 @@ package com.pug.darkmatter.ecs.system
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
+import com.pug.darkmatter.ecs.audio.AudioService
 import com.pug.darkmatter.ecs.component.PlayerComponent
 import com.pug.darkmatter.ecs.component.RemoveComponent
 import com.pug.darkmatter.ecs.component.TransformComponent
@@ -17,7 +18,7 @@ const val DAMAGE_AREA_HEIGHT = 2f
 private const val DAMAGE_PER_SECOND = 25f
 private const val DEATH_EXPLOSION_DURATION = 0.9f
 
-class DamageSystem(private val gameEventManager: GameEventManager) :
+class DamageSystem(private val gameEventManager: GameEventManager, private val audioService: AudioService) :
     IteratingSystem(allOf(PlayerComponent::class, TransformComponent::class).exclude(RemoveComponent::class).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val transform = entity[TransformComponent.mapper]
@@ -37,6 +38,7 @@ class DamageSystem(private val gameEventManager: GameEventManager) :
                     return
                 }
             }
+            audioService.play(player.damageSoundAsset)
             player.life -= damage
             gameEventManager.dispatchEvent(GameEvent.PlayerHit.apply {
                 this.player = entity
@@ -45,6 +47,7 @@ class DamageSystem(private val gameEventManager: GameEventManager) :
 
             })
             if (player.life <= 0f) {
+                audioService.play(player.explosionSoundAsset)
                 gameEventManager.dispatchEvent(GameEvent.PlayerDeath.apply {
                     this.distance = player.distance
                 })

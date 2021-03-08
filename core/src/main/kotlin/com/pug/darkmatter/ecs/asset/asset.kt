@@ -33,6 +33,7 @@ enum class SoundAsset(
     SHIELD("shield.wav"),
     DAMAGE("damage.wav"),
     BLOCK("block.wav"),
+    EXPLOSION("explosion.wav"),
 }
 
 enum class MusicAsset(

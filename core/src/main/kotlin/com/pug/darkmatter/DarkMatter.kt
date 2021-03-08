@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.pug.darkmatter.ecs.asset.MusicAsset
 import com.pug.darkmatter.ecs.asset.TextureAsset
 import com.pug.darkmatter.ecs.asset.TextureAtlasAsset
 import com.pug.darkmatter.ecs.audio.AudioService
@@ -52,7 +53,7 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
             addSystem(PlayerInputSystem(gameViewport))
             addSystem(MoveSystem())
             addSystem(PowerUpSystem(gameEventManager, audioService))
-            addSystem(DamageSystem(gameEventManager))
+            addSystem(DamageSystem(gameEventManager,audioService))
             addSystem(CameraShakeSystem(gameViewport.camera, gameEventManager))
             addSystem(
                 PlayerAnimationSystem(
@@ -79,6 +80,11 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
     override fun dispose() {
         super.dispose()
         LOG.debug { "Sprites in batch: ${(batch as SpriteBatch).maxSpritesInBatch}" }
+        //checking reference count for the music assets
+        MusicAsset.values().forEach {
+            LOG.debug { "RefCount $it: ${assets.getReferenceCount(it.descriptor)}" }
+
+        }
         batch.dispose()
         assets.dispose()
     }
