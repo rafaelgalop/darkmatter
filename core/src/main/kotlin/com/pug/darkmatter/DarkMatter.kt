@@ -4,17 +4,16 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Application.LOG_DEBUG
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.pug.darkmatter.ecs.asset.TextureAsset
 import com.pug.darkmatter.ecs.asset.TextureAtlasAsset
+import com.pug.darkmatter.ecs.audio.AudioService
+import com.pug.darkmatter.ecs.audio.DefaultAudioService
 import com.pug.darkmatter.ecs.system.*
 import com.pug.darkmatter.event.GameEventManager
 import com.pug.darkmatter.screen.DarkMatterScreen
-import com.pug.darkmatter.screen.GameScreen
 import com.pug.darkmatter.screen.LoadingScreen
 import ktx.app.KtxGame
 import ktx.assets.async.AssetStorage
@@ -44,14 +43,15 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
     //    val graphicsAtlas by lazy { TextureAtlas(Gdx.files.internal("graphics/graphics.atlas")) }
     //    val backgroundTexture by lazy { Texture(Gdx.files.internal("graphics/background.png")) }
 
+    val audioService: AudioService by lazy {DefaultAudioService(assets)}
     val engine: Engine by lazy {
         PooledEngine().apply {
-            var graphicsAtlas = assets[TextureAtlasAsset.GMAE_GRAPHICS.descriptor]
+            var graphicsAtlas = assets[TextureAtlasAsset.GAME_GRAPHICS.descriptor]
             var backgroundTexture = assets[TextureAsset.BACKGROUND.descriptor]
 
             addSystem(PlayerInputSystem(gameViewport))
             addSystem(MoveSystem())
-            addSystem(PowerUpSystem(gameEventManager))
+            addSystem(PowerUpSystem(gameEventManager, audioService))
             addSystem(DamageSystem(gameEventManager))
             addSystem(CameraShakeSystem(gameViewport.camera, gameEventManager))
             addSystem(

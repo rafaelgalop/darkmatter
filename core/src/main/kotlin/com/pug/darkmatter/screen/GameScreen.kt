@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.pug.darkmatter.DarkMatter
 import com.pug.darkmatter.UNIT_SCALE
 import com.pug.darkmatter.V_WIDTH
+import com.pug.darkmatter.ecs.asset.MusicAsset
 import com.pug.darkmatter.ecs.component.*
 import com.pug.darkmatter.ecs.system.DAMAGE_AREA_HEIGHT
 import com.pug.darkmatter.event.GameEvent
@@ -29,6 +30,8 @@ class GameScreen(
     override fun show() {
         LOG.debug { "Game Screen is shown" }
         gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
+
+        audioService.play(MusicAsset.GAME)
         spawnPlayer()
         engine.entity {
             with<TransformComponent> {
@@ -75,7 +78,9 @@ class GameScreen(
     override fun render(delta: Float) {
         (game.batch as SpriteBatch).renderCalls = 0
         engine.update(min(MAX_DELTA_TIME, delta))
-        LOG.debug { "Render calls: ${(game.batch as SpriteBatch).renderCalls}" }
+        audioService.update()
+
+//        LOG.debug { "Render calls: ${(game.batch as SpriteBatch).renderCalls}" }
     }
 
     override fun onEvent(event: GameEvent) {
