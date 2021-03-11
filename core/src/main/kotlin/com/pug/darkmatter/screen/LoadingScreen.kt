@@ -2,6 +2,7 @@ package com.pug.darkmatter.screen
 
 import com.badlogic.gdx.utils.Logger
 import com.pug.darkmatter.DarkMatter
+import com.pug.darkmatter.ecs.asset.ShaderProgramAsset
 import com.pug.darkmatter.ecs.asset.SoundAsset
 import com.pug.darkmatter.ecs.asset.TextureAsset
 import com.pug.darkmatter.ecs.asset.TextureAtlasAsset
@@ -22,7 +23,8 @@ class LoadingScreen(game: DarkMatter) : DarkMatterScreen(game) {
         val assetRefs = gdxArrayOf(
             TextureAsset.values().map{ assets.loadAsync(it.descriptor)},
             TextureAtlasAsset.values().map { assets.loadAsync(it.descriptor)},
-            SoundAsset.values().map {assets.loadAsync(it.descriptor)}
+            SoundAsset.values().map {assets.loadAsync(it.descriptor)},
+            ShaderProgramAsset.values().map { assets.loadAsync(it.descriptor) }
         ).flatten()
 
         //once assets are loaded, change to game screen

@@ -7,8 +7,10 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.pug.darkmatter.ecs.asset.MusicAsset
+import com.pug.darkmatter.ecs.asset.ShaderProgramAsset
 import com.pug.darkmatter.ecs.asset.TextureAsset
 import com.pug.darkmatter.ecs.asset.TextureAtlasAsset
 import com.pug.darkmatter.ecs.audio.AudioService
@@ -24,7 +26,6 @@ import ktx.async.KtxAsync
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
-import ktx.preferences.set
 
 const val UNIT_SCALE: Float = 1 / 16f
 const val V_WIDTH = 9
@@ -36,7 +37,6 @@ private val LOG: Logger = logger<DarkMatter>()
 /** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms.  */
 class DarkMatter : KtxGame<DarkMatterScreen>() {
     val gameViewport = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
-    val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
     val batch: Batch by lazy { SpriteBatch() }
     val gameEventManager = GameEventManager()
     val assets: AssetStorage by lazy {
@@ -47,8 +47,8 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
     //    val graphicsAtlas by lazy { TextureAtlas(Gdx.files.internal("graphics/graphics.atlas")) }
     //    val backgroundTexture by lazy { Texture(Gdx.files.internal("graphics/background.png")) }
 
-    val audioService: AudioService by lazy {DefaultAudioService(assets)}
-    val preferences: Preferences by lazy {Gdx.app.getPreferences(DARK_MATTER_PREFERENCES_FILE)}
+    val audioService: AudioService by lazy { DefaultAudioService(assets) }
+    val preferences: Preferences by lazy { Gdx.app.getPreferences(DARK_MATTER_PREFERENCES_FILE) }
 
     val engine: Engine by lazy {
         PooledEngine().apply {
@@ -58,7 +58,7 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
             addSystem(PlayerInputSystem(gameViewport))
             addSystem(MoveSystem())
             addSystem(PowerUpSystem(gameEventManager, audioService))
-            addSystem(DamageSystem(gameEventManager,audioService))
+            addSystem(DamageSystem(gameEventManager, audioService))
             addSystem(CameraShakeSystem(gameViewport.camera, gameEventManager))
             addSystem(
                 PlayerAnimationSystem(
@@ -69,7 +69,16 @@ class DarkMatter : KtxGame<DarkMatterScreen>() {
             )
             addSystem(AttachSystem())
             addSystem(AnimationSystem(graphicsAtlas))
-            addSystem(RenderSystem(batch, gameViewport, uiViewport, backgroundTexture, gameEventManager))
+            addSystem(
+                RenderSystem(
+                    batch,
+                    gameViewport,
+                    uiViewport,
+                    backgroundTexture,
+                    gameEventManager,
+                    assets[ShaderProgramAsset.OUTLINE.descriptor]
+                )
+            )
             addSystem(RemoveSystem())
             addSystem(DebugSystem())
         }
